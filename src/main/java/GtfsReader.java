@@ -12,10 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -37,30 +34,28 @@ public class GtfsReader {
 
 
     public StopDTO findStop() {
-        StopDTO stopDTO = new StopDTO();
         try {
+            InputStreamReader fileStream = new InputStreamReader(new FileInputStream(Constants.STOPS), Constants.ENCODING);
+            CSVReader reader = new CSVReader(fileStream);
 
-            Path path = Paths.get(Constants.STOPS);
-            String stops = Files.readString(path);
+            HeaderColumnNameMappingStrategy<StopDTO> beanStrategy = new HeaderColumnNameMappingStrategy<StopDTO>();
+            beanStrategy.setType(StopDTO.class);
 
-            Stream<String> lines = stops.lines();
+            CsvToBean<StopDTO> csvToBean = new CsvToBean<StopDTO>();
+            csvToBean.setCsvReader(reader);
+            csvToBean.setMappingStrategy(beanStrategy);
 
-            Stream<String> skipedHeader = lines.skip(1);
-            List<String> correctStop = skipedHeader
-                    .skip(1)
-                    .filter(line -> stopId.equals(line.split(Constants.DELIMITER)[0]))
-                    .collect(Collectors.toList());
-
-            List<String> splited = Arrays.asList(correctStop.get(0).split(Constants.DELIMITER));
-            stopDTO.setId(splited.get(0));
-            stopDTO.setCode(splited.get(1));
-            stopDTO.setName(splited.get(2));
+            Map<String, StopDTO> mapedStops = csvToBean.stream()
+                    .filter(line -> stopId.equals(line.getId()))
+                    .collect(Collectors.toMap(StopDTO::getId, v -> v));
+            reader.close();
+            return mapedStops.get(stopId);
 
         } catch (Exception e) {
             log.log(Level.SEVERE, e.getMessage());
             throw new RuntimeException();
         }
-        return stopDTO;
+
     }
 
     public List<StopTimesDTO> readStopTimes() {
@@ -107,7 +102,6 @@ public class GtfsReader {
 
             InputStreamReader fileStream = new InputStreamReader(new FileInputStream(Constants.TRIP), Constants.ENCODING);
             CSVReader reader = new CSVReader(fileStream);
-
 
             HeaderColumnNameMappingStrategy<TripDTO> beanStrategy = new HeaderColumnNameMappingStrategy<TripDTO>();
             beanStrategy.setType(TripDTO.class);

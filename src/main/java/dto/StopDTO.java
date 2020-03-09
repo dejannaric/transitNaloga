@@ -1,11 +1,16 @@
 package dto;
 
+import com.opencsv.bean.CsvBindByName;
+
 import java.io.Serializable;
 
 public class StopDTO implements Serializable {
 
+    @CsvBindByName(column = "stop_id")
     private String id;
+    @CsvBindByName(column = "stop_code")
     private String code;
+    @CsvBindByName(column = "stop_name")
     private String name;
 
     public String getId() {
