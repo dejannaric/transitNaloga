@@ -9,4 +9,6 @@ public class Constants {
 
     public static final String DELIMITER = ",";
     public static final String ENCODING = "UTF-8";
+
+    public static final long TWO_HOURS = 60 * 60 * 2 * 1000;
 }

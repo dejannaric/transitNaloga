@@ -2,6 +2,9 @@ package dto;
 
 import com.opencsv.bean.CsvBindByName;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CalendarDTO {
@@ -12,11 +15,14 @@ public class CalendarDTO {
     private Integer monday, tuesday, wednesday, thursday, friday, saturday, sunday;
 
     @CsvBindByName
-    private Date start_date, end_date;
+    private String start_date, end_date;
+
+    private Date startDate, endDate;
 
     public String getService_id() {
         return service_id;
     }
+
 
     public void setService_id(String service_id) {
         this.service_id = service_id;
@@ -78,19 +84,47 @@ public class CalendarDTO {
         this.sunday = sunday;
     }
 
-    public Date getStart_date() {
+    public String getStart_date() {
         return start_date;
     }
 
-    public void setStart_date(Date start_date) {
+    public void setStart_date(String start_date) {
         this.start_date = start_date;
+        DateFormat format = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date date = format.parse(start_date);
+            setStartDate(date);
+        } catch (ParseException e) {
+        }
     }
 
-    public Date getEnd_date() {
+    public String getEnd_date() {
         return end_date;
     }
 
-    public void setEnd_date(Date end_date) {
+    public void setEnd_date(String end_date) {
         this.end_date = end_date;
+        DateFormat format = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date date = format.parse(end_date);
+            setEndDate(date);
+        } catch (ParseException e) {
+        }
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }
