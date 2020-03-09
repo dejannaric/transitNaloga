@@ -1,5 +1,8 @@
 import dto.*;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.logging.Logger;
@@ -140,16 +143,20 @@ public class CalculateBuses {
             for (int i = 0; i < value.size(); i++) {
                 StopTimesDTO dto = value.get(i);
                 if(displayType == DisplayTypeEnum.ABSOLUTE) {
-                    timesOutPrint.append(dto.getArrival_time().toString());
+                    DateFormat format = new SimpleDateFormat("HH:mm");
+                    String formatedTime = format.format(dto.getArrival_time());
+                    timesOutPrint.append(formatedTime);
                     if(i + 1 < value.size()) {
                         timesOutPrint.append(", ");
                     }
 
                 } else {
                     LocalTime arrivalTime = LocalTime.parse(dto.getArrival_time().toString());
-                    LocalTime nowTime = LocalTime.parse(now.toString());
-                    long between = MINUTES.between(arrivalTime, nowTime);
+                    Time nowTime = new Time(now.getTime());
+                    LocalTime nowLocalTime = LocalTime.parse(nowTime.toString());
+                    long between = MINUTES.between(nowLocalTime, arrivalTime);
                     timesOutPrint.append(between);
+                    timesOutPrint.append("min");
                     if(i + 1 < value.size()) {
                         timesOutPrint.append(", ");
                     }
