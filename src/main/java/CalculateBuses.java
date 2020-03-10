@@ -14,8 +14,8 @@ public class CalculateBuses {
 
 
     private static final Logger log = Logger.getLogger(CalculateBuses.class.getName());
-//    private final Date now = new Date(System.currentTimeMillis());
-    private final Date now = new Date(1583326800000L);
+    private final Date now = new Date(System.currentTimeMillis());
+//    private final Date now = new Date(1583326800000L);
     private final Date maxNextHours = new Date(now.getTime() + (Constants.TWO_HOURS));
 
     private String stopId;
